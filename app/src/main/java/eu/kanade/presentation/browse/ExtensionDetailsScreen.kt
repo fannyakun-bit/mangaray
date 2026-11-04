@@ -1,5 +1,6 @@
 package eu.kanade.presentation.browse
 
+import androidx.compose.ui.text.font.FontWeight
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -251,6 +252,7 @@ private fun DetailsHeader(
             Text(
                 text = extension.name,
                 style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
             )
 

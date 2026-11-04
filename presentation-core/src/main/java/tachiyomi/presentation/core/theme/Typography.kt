@@ -8,7 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 
 val Typography.header: TextStyle
     @Composable
-    get() = bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        fontWeight = FontWeight.SemiBold,
+    // Webtoon-style: header section tebal dan gelap
+    get() = titleMedium.copy(
+        color = MaterialTheme.colorScheme.onSurface,
+        fontWeight = FontWeight.Bold,
     )

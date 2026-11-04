@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.CardColors
@@ -25,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -97,6 +100,7 @@ private fun TransitionText(
         modifier = Modifier
             .widthIn(max = 460.dp)
             .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (topChapter != null) {
             ChapterText(
@@ -205,6 +209,9 @@ private fun ChapterHeaderText(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -215,7 +222,16 @@ private fun ChapterText(
     scanlator: String?,
     downloaded: Boolean,
 ) {
-    Column {
+    // Webtoon-style: info episode dalam kartu rounded, teks di tengah
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         ChapterHeaderText(
             text = header,
             modifier = Modifier.padding(bottom = 4.dp),
@@ -229,7 +245,9 @@ private fun ChapterText(
                 }
                 append(name)
             },
-            fontSize = 20.sp,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
             maxLines = 5,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.titleLarge,
@@ -257,9 +275,11 @@ private fun ChapterText(
                     .padding(top = 2.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
+    }
     }
 }
 
