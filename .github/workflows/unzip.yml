@@ -1,14 +1,12 @@
-name: Unzip
+name: Unzip project
 
-# Taruh file ini di .github/workflows/unzip.yml
-# Upload webtoon-ui.zip ke root repo, lalu jalankan workflow ini dari tab Actions.
+# Upload mangaray-main.zip ke root repo (atau jalankan manual dari tab Actions),
+# workflow ini extract isinya ke root repo lalu commit hasilnya.
 on:
   workflow_dispatch:
-    inputs:
-      zip_file:
-        description: "Nama file zip di root repo"
-        required: true
-        default: "webtoon-ui.zip"
+  push:
+    paths:
+      - "*.zip"
 
 permissions:
   contents: write
@@ -19,17 +17,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract zip (timpa file lama)
+      - name: Extract zip
         run: |
-          test -f "${{ inputs.zip_file }}" || { echo "File tidak ketemu"; exit 1; }
-          unzip -o "${{ inputs.zip_file }}"
-          rm "${{ inputs.zip_file }}"
+          ZIP=$(ls -t *.zip 2>/dev/null | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "Tidak ada file .zip di root repo"
+            exit 1
+          fi
+          echo "Extract: $ZIP"
+          rm -rf /tmp/unz && mkdir /tmp/unz
+          unzip -q "$ZIP" -d /tmp/unz
 
-      - name: Commit dan push
+          # Kalau isinya cuma 1 folder (mangaray-main/), pakai isi folder itu
+          SRC=/tmp/unz
+          if [ "$(ls -A /tmp/unz | wc -l)" = "1" ] && [ -d "$(ls -d /tmp/unz/* | head -n 1)" ]; then
+            SRC=$(ls -d /tmp/unz/* | head -n 1)
+          fi
+
+          # Jangan timpa workflow yang lagi jalan (token tidak boleh ubah .github/workflows)
+          rm -rf "$SRC/.github/workflows"
+
+          # Salin ke root repo (file lama di-overwrite, file yang dihapus di zip ikut dihapus)
+          rsync -a --delete \
+            --exclude '.git' --exclude '.github' --exclude "$ZIP" \
+            "$SRC"/ ./
+          # Sisa .github dari zip (selain workflows) kalau ada
+          if [ -d "$SRC/.github" ]; then
+            rsync -a "$SRC/.github"/ ./.github/
+          fi
+          rm -f "$ZIP"
+
+      - name: Commit & push
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet && echo "Tidak ada perubahan" && exit 0
-          git commit -m "Apply Webtoon-style UI"
-          git push
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan"
+          else
+            git commit -m "Update project dari zip"
+            git push
+          fi
