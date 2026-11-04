@@ -6,9 +6,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.kanade.domain.ui.model.AppTheme
 import eu.kanade.presentation.theme.colorscheme.BaseColorScheme
@@ -69,17 +71,30 @@ private fun BaseTachiyomiTheme(
             )
         },
         shapes = MangaRayShapes,
+        typography = MangaRayTypography,
         content = content,
     )
 }
 
+// Webtoon-style: flat, tight corners
 private val MangaRayShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(32.dp),
+    extraSmall = RoundedCornerShape(4.dp),
+    small = RoundedCornerShape(6.dp),
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(12.dp),
+    extraLarge = RoundedCornerShape(20.dp),
 )
+
+// Webtoon-style: heavier titles, lighter body text
+private val MangaRayTypography = Typography().let {
+    it.copy(
+        titleLarge = it.titleLarge.copy(fontWeight = FontWeight.Bold),
+        titleMedium = it.titleMedium.copy(fontWeight = FontWeight.Bold),
+        titleSmall = it.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+        headlineSmall = it.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
+        labelLarge = it.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+    )
+}
 
 private fun getThemeColorScheme(
     context: Context,

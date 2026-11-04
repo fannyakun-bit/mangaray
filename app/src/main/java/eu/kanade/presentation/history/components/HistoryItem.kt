@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,7 @@ import tachiyomi.presentation.core.i18n.stringResource
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-private val HistoryItemHeight = 96.dp
+private val HistoryItemHeight = 88.dp
 
 @Composable
 fun HistoryItem(
@@ -53,9 +54,10 @@ fun HistoryItem(
             .padding(horizontal = MaterialTheme.padding.medium, vertical = MaterialTheme.padding.small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MangaCover.Book(
+        MangaCover.Square(
             modifier = Modifier.fillMaxHeight(),
             data = history.coverData,
+            shape = RoundedCornerShape(8.dp),
             onClick = onClickCover,
         )
         Column(
@@ -66,7 +68,7 @@ fun HistoryItem(
             val textStyle = MaterialTheme.typography.bodyMedium
             Text(
                 text = history.title,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = textStyle,
@@ -85,6 +87,7 @@ fun HistoryItem(
                     readAt
                 },
                 modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = textStyle,
             )
         }

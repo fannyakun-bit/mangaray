@@ -46,9 +46,9 @@ fun Badge(
         modifier = modifier
             .clip(shape)
             .background(color)
-            .padding(horizontal = 3.dp, vertical = 1.dp),
+            .padding(horizontal = 5.dp, vertical = 1.dp),
         color = textColor,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         maxLines = 1,
         style = MaterialTheme.typography.bodySmall,
     )
@@ -91,9 +91,9 @@ fun Badge(
         modifier = modifier
             .clip(shape)
             .background(color)
-            .padding(horizontal = 3.dp, vertical = 1.dp),
+            .padding(horizontal = 5.dp, vertical = 1.dp),
         color = iconColor,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         maxLines = 1,
         style = MaterialTheme.typography.bodySmall,
     )

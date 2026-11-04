@@ -1,9 +1,29 @@
 package eu.kanade.presentation.more
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import eu.kanade.presentation.more.settings.widget.SwitchPreferenceWidget
 import eu.kanade.presentation.more.settings.widget.TextPreferenceWidget
@@ -46,8 +66,11 @@ fun MoreScreen(
     Scaffold { contentPadding ->
         ScrollbarLazyColumn(contentPadding = contentPadding) {
             item {
-                LogoHeader(
-                    iconPadding = PaddingValues(vertical = 32.dp),
+                MoreHeader(
+                    onClickDownloadQueue = onClickDownloadQueue,
+                    onClickCategories = onClickCategories,
+                    onClickStats = onClickStats,
+                    onClickSettings = onClickSettings,
                 )
             }
             item {
@@ -153,5 +176,88 @@ fun MoreScreen(
                 )
             }
         }
+    }
+}
+
+/**
+ * Webtoon-style header: brand title plus a card with the most used shortcuts.
+ */
+@Composable
+private fun MoreHeader(
+    onClickDownloadQueue: () -> Unit,
+    onClickCategories: () -> Unit,
+    onClickStats: () -> Unit,
+    onClickSettings: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 12.dp),
+    ) {
+        Text(
+            text = stringResource(MR.strings.app_name),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            MoreShortcut(
+                icon = MaterialSymbols.Rounded.Download,
+                label = stringResource(MR.strings.label_download_queue),
+                onClick = onClickDownloadQueue,
+            )
+            MoreShortcut(
+                icon = MaterialSymbols.AutoMirroredRounded.Label,
+                label = stringResource(MR.strings.categories),
+                onClick = onClickCategories,
+            )
+            MoreShortcut(
+                icon = MaterialSymbols.Rounded.QueryStats,
+                label = stringResource(MR.strings.label_stats),
+                onClick = onClickStats,
+            )
+            MoreShortcut(
+                icon = MaterialSymbols.Rounded.Settings,
+                label = stringResource(MR.strings.label_settings),
+                onClick = onClickSettings,
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowScope.MoreShortcut(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp, horizontal = 2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(26.dp),
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
