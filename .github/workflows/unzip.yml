@@ -1,7 +1,8 @@
 name: Unzip project
 
-# Upload mangaray-main.zip ke root repo (atau jalankan manual dari tab Actions),
-# workflow ini extract isinya ke root repo lalu commit hasilnya.
+# Upload zip (patch atau full) ke root repo, atau jalankan manual dari tab Actions.
+# Isi zip di-OVERLAY ke repo: file yang ada di zip menimpa yang lama,
+# file lain TIDAK dihapus (aman untuk zip patch berisi file yang berubah saja).
 on:
   workflow_dispatch:
   push:
@@ -34,17 +35,11 @@ jobs:
             SRC=$(ls -d /tmp/unz/* | head -n 1)
           fi
 
-          # Jangan timpa workflow yang lagi jalan (token tidak boleh ubah .github/workflows)
+          # Token tidak boleh ubah .github/workflows
           rm -rf "$SRC/.github/workflows"
 
-          # Salin ke root repo (file lama di-overwrite, file yang dihapus di zip ikut dihapus)
-          rsync -a --delete \
-            --exclude '.git' --exclude '.github' --exclude "$ZIP" \
-            "$SRC"/ ./
-          # Sisa .github dari zip (selain workflows) kalau ada
-          if [ -d "$SRC/.github" ]; then
-            rsync -a "$SRC/.github"/ ./.github/
-          fi
+          # Overlay tanpa --delete
+          rsync -a --exclude '.git' --exclude "$ZIP" "$SRC"/ ./
           rm -f "$ZIP"
 
       - name: Commit & push
