@@ -1,5 +1,6 @@
 package eu.kanade.presentation.browse
 
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.Surface
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.items
@@ -362,6 +363,7 @@ private fun ExtensionItemContent(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
         )
 
         if (store != null) {

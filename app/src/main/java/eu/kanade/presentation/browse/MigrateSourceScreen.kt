@@ -1,5 +1,6 @@
 package eu.kanade.presentation.browse
 
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -175,6 +176,7 @@ private fun MigrateSourceItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),

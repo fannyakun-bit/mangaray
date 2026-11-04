@@ -208,6 +208,24 @@ data class BrowseSourceScreen(
                         }
                     }
 
+                    // Webtoon-style: chip genre. Pakai filter genre source kalau ada,
+                    // kalau tidak ada jadi pencarian teks.
+                    Row(
+                        modifier = Modifier
+                            .horizontalScroll(rememberScrollState())
+                            .padding(horizontal = MaterialTheme.padding.small),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                    ) {
+                        val activeQuery = (state.listing as? Listing.Search)?.query
+                        BROWSE_GENRES.forEach { genre ->
+                            FilterChip(
+                                selected = activeQuery.equals(genre, ignoreCase = true),
+                                onClick = { viewModel.searchGenre(genre) },
+                                label = { Text(text = genre) },
+                            )
+                        }
+                    }
+
                     HorizontalDivider()
                 }
             },
@@ -316,3 +334,8 @@ data class BrowseSourceScreen(
         class Genre(txt: String) : SearchType(txt)
     }
 }
+
+private val BROWSE_GENRES = listOf(
+    "Romance", "Fantasy", "Action", "Drama", "Comedy", "Horror", "Slice of Life",
+    "Thriller", "Supernatural", "Sci-Fi", "School Life", "Adventure", "Mystery",
+)

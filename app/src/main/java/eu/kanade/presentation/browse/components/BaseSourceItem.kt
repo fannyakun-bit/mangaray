@@ -1,5 +1,6 @@
 package eu.kanade.presentation.browse.components
 
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,7 @@ private val defaultContent: @Composable RowScope.(Source, String?) -> Unit = { s
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
         )
         if (sourceLangString != null) {
             Text(

@@ -1,5 +1,6 @@
 package eu.kanade.presentation.browse.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import android.util.DisplayMetrics
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,9 +26,11 @@ import mihon.icons.materialsymbols.roundedfilled.Warning
 import tachiyomi.domain.source.model.Source
 import tachiyomi.source.local.isLocal
 
+// Webtoon-style: ikon source/extension berbentuk kotak rounded
 private val defaultModifier = Modifier
     .height(40.dp)
     .aspectRatio(1f)
+    .clip(RoundedCornerShape(10.dp))
 
 @Composable
 fun SourceIcon(
