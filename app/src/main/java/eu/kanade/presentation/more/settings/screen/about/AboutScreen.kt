@@ -153,7 +153,7 @@ object AboutScreen : Screen() {
                     item {
                         TextPreferenceWidget(
                             title = stringResource(MR.strings.whats_new),
-                            onPreferenceClick = { uriHandler.openUri(RELEASE_URL) },
+                            onPreferenceClick = { uriHandler.openUri("https://github.com/fannyakun-bit/mangaray/releases") },
                         )
                     }
                 }
@@ -167,8 +167,9 @@ object AboutScreen : Screen() {
 
                 item {
                     TextPreferenceWidget(
-                        title = stringResource(MR.strings.privacy_policy),
-                        onPreferenceClick = { uriHandler.openUri("https://mihon.app/privacy/") },
+                        title = "Berbasis Mihon",
+                        subtitle = "Lisensi Apache 2.0 - github.com/mihonapp/mihon",
+                        onPreferenceClick = { uriHandler.openUri("https://github.com/mihonapp/mihon") },
                     )
                 }
 
@@ -182,32 +183,12 @@ object AboutScreen : Screen() {
                         LinkIcon(
                             label = stringResource(MR.strings.website),
                             icon = MaterialSymbols.Rounded.Public,
-                            url = "https://mihon.app",
-                        )
-                        LinkIcon(
-                            label = "Discord",
-                            icon = SimpleIcons.Discord,
-                            url = Constants.URL_DISCORD,
-                        )
-                        LinkIcon(
-                            label = "X",
-                            icon = SimpleIcons.X,
-                            url = "https://x.com/mihonapp",
-                        )
-                        LinkIcon(
-                            label = "Facebook",
-                            icon = SimpleIcons.Facebook,
-                            url = "https://facebook.com/mihonapp",
-                        )
-                        LinkIcon(
-                            label = "Reddit",
-                            icon = SimpleIcons.Reddit,
-                            url = "https://www.reddit.com/r/mihonapp",
+                            url = "https://github.com/fannyakun-bit/mangaray",
                         )
                         LinkIcon(
                             label = "GitHub",
                             icon = SimpleIcons.Github,
-                            url = "https://github.com/mihonapp",
+                            url = "https://github.com/fannyakun-bit/mangaray",
                         )
                     }
                 }
