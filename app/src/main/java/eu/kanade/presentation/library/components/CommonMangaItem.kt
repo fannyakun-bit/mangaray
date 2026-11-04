@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -127,14 +128,14 @@ private fun BoxScope.CoverTextOverlay(
 ) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp))
+            .clip(RoundedCornerShape(bottomStart = 14.dp, bottomEnd = 14.dp))
             .background(
                 Brush.verticalGradient(
                     0f to Color.Transparent,
-                    1f to Color(0xAA000000),
+                    1f to Color(0xE6130D2B),
                 ),
             )
-            .fillMaxHeight(0.33f)
+            .fillMaxHeight(0.42f)
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
     )
@@ -149,6 +150,7 @@ private fun BoxScope.CoverTextOverlay(
             title = title,
             style = MaterialTheme.typography.titleSmall.copy(
                 color = Color.White,
+                fontWeight = FontWeight.SemiBold,
                 shadow = Shadow(
                     color = Color.Black,
                     blurRadius = 4f,
@@ -241,7 +243,8 @@ private fun MangaGridCover(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(MangaCover.Book.ratio),
+            .aspectRatio(MangaCover.Book.ratio)
+            .clip(RoundedCornerShape(14.dp)),
     ) {
         cover()
         content?.invoke(this)
@@ -298,7 +301,7 @@ private fun GridItemSelectable(
 ) {
     Box(
         modifier = modifier
-            .clip(MaterialTheme.shapes.small)
+            .clip(RoundedCornerShape(16.dp))
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
