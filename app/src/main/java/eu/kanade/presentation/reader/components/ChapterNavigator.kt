@@ -22,7 +22,6 @@ import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalSlider
 import androidx.compose.material3.rememberSliderState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -104,9 +103,9 @@ fun ChapterNavigator(
     val mainAxisPadding = if (isTabletUi) 24.dp else 8.dp
 
     // Match with toolbar background color set in ReaderActivity
-    val backgroundColor = MaterialTheme.colorScheme
-        .surfaceColorAtElevation(3.dp)
-        .copy(alpha = if (isSystemInDarkTheme()) 0.9f else 0.95f)
+    // Webtoon-style: flat surface, same as ReaderAppBars (tanpa elevasi tonal)
+    val backgroundColor = MaterialTheme.colorScheme.surface
+        .copy(alpha = if (isSystemInDarkTheme()) 0.92f else 0.96f)
     val buttonColor = IconButtonDefaults.filledIconButtonColors(
         containerColor = backgroundColor,
         disabledContainerColor = backgroundColor,

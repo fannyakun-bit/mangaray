@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
@@ -24,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -338,13 +340,18 @@ private fun MangaScreenSmallImpl(
                 onClick = onContinueReading,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                expanded = chapterListState.shouldExpandFAB(),
-                modifier = Modifier.animateFloatingActionButton(
-                    visible = isFABVisible,
-                    alignment = Alignment.BottomEnd,
-                ),
+                expanded = true,
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .animateFloatingActionButton(
+                        visible = isFABVisible,
+                        alignment = Alignment.BottomCenter,
+                    ),
             )
         },
+        // Webtoon-style: tombol baca lebar di bawah, bukan FAB di pojok
+        floatingActionButtonPosition = FabPosition.Center,
     ) { contentPadding ->
         val topPadding = contentPadding.calculateTopPadding()
 
