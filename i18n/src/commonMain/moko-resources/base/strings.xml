@@ -1090,4 +1090,13 @@
     <string name="donationCampaign.paragraph3">Regardless, Mihon will continue to be maintained by me and the volunteers, and it will stay open source.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Dismiss</string>
+
+    <!-- Webtoon-style layout -->
+    <string name="label_home">Home</string>
+    <string name="label_daily">Daily</string>
+    <string name="label_my">My</string>
+    <string name="home_continue_reading">Lanjut baca</string>
+    <string name="home_new_updates">Baru update</string>
+    <string name="home_favorites">Favorit</string>
+    <string name="daily_completed">Completed</string>
 </resources>

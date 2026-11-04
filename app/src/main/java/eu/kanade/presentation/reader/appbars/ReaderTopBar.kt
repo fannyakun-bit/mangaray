@@ -26,8 +26,9 @@ fun ReaderTopBar(
     AppBar(
         modifier = modifier,
         backgroundColor = Color.Transparent,
-        title = mangaTitle,
-        subtitle = chapterTitle,
+        // Webtoon-style: episode title on top, series title as subtitle
+        title = chapterTitle ?: mangaTitle,
+        subtitle = if (chapterTitle != null) mangaTitle else null,
         navigateUp = navigateUp,
         actions = {
             AppBarActions(

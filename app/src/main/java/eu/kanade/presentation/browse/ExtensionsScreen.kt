@@ -1,5 +1,11 @@
 package eu.kanade.presentation.browse
 
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -12,7 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -38,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.presentation.browse.components.BaseBrowseItem
 import eu.kanade.presentation.browse.components.ExtensionIcon
 import eu.kanade.presentation.browse.components.ExtensionPill
 import eu.kanade.presentation.browse.components.label
@@ -63,7 +67,6 @@ import mihon.icons.materialsymbols.rounded.Settings
 import mihon.icons.materialsymbols.rounded.VerifiedUser
 import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.i18n.MR
-import tachiyomi.presentation.core.components.FastScrollLazyColumn
 import tachiyomi.presentation.core.components.material.PullRefresh
 import tachiyomi.presentation.core.components.material.padding
 import tachiyomi.presentation.core.components.material.topSmallPaddingValues
@@ -154,11 +157,14 @@ private fun ExtensionContent(
     var notLoadedState by remember { mutableStateOf<Extension.NotLoaded?>(null) }
     val installGranted = rememberRequestPackageInstallsPermissionState(initialValue = true)
 
-    FastScrollLazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         contentPadding = contentPadding + topSmallPaddingValues,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (!installGranted && state.installer?.requiresSystemPermission == true) {
-            item(key = "extension-permissions-warning") {
+            item(key = "extension-permissions-warning", span = { GridItemSpan(maxLineSpan) }) {
                 WarningBanner(
                     textRes = MR.strings.ext_permission_install_apps_warning,
                     modifier = Modifier.clickable {
@@ -172,6 +178,7 @@ private fun ExtensionContent(
             item(
                 contentType = "header",
                 key = "extensionHeader-${header.hashCode()}",
+                span = { GridItemSpan(maxLineSpan) },
             ) {
                 when (header) {
                     is ExtensionUiModel.Header.Resource -> {
@@ -305,29 +312,38 @@ private fun ExtensionItem(
         is Extension.Installed -> extension.store
     }
 
-    BaseBrowseItem(
-        modifier = modifier,
-        onClickItem = { onClickItem(extension) },
-        onLongClickItem = { onLongClickItem(extension) },
-        icon = {
+    Surface(
+        modifier = modifier
+            .padding(horizontal = 4.dp)
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Column(
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onClickItem(extension) },
+                    onLongClick = { onLongClickItem(extension) },
+                )
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
             ExtensionItemIcon(extension = extension, installStep = installStep)
-        },
-        action = {
+            ExtensionItemContent(
+                extension = extension,
+                installStep = installStep,
+                store = store,
+                modifier = Modifier.fillMaxWidth(),
+            )
             ExtensionItemActions(
                 extension = extension,
                 installStep = installStep,
+                modifier = Modifier.align(Alignment.End),
                 onClickItemCancel = onClickItemCancel,
                 onClickItemAction = onClickItemAction,
                 onClickItemSecondaryAction = onClickItemSecondaryAction,
             )
-        },
-    ) {
-        ExtensionItemContent(
-            extension = extension,
-            installStep = installStep,
-            store = store,
-            modifier = Modifier.weight(1f),
-        )
+        }
     }
 }
 
@@ -339,7 +355,7 @@ private fun ExtensionItemContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = MaterialTheme.padding.medium),
+        modifier = modifier,
     ) {
         Text(
             text = extension.name,

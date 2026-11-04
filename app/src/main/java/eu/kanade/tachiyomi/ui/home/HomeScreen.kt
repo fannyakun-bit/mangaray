@@ -64,11 +64,13 @@ object HomeScreen : Screen() {
     @Suppress("ConstPropertyName")
     private const val TabNavigatorKey = "HomeTabs"
 
+    // Webtoon-style order: Home, Daily, Browse, My (library), More.
+    // Updates and History stay reachable via openTab events and the Home sections.
     private val TABS = listOf(
-        LibraryTab,
-        UpdatesTab,
-        HistoryTab,
+        HomeTab,
+        DailyTab,
         BrowseTab,
+        LibraryTab,
         MoreTab,
     )
 
@@ -76,7 +78,7 @@ object HomeScreen : Screen() {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         TabNavigator(
-            tab = LibraryTab,
+            tab = HomeTab,
             key = TabNavigatorKey,
         ) { tabNavigator ->
             // Provide usable navigator to content screen
@@ -131,8 +133,9 @@ object HomeScreen : Screen() {
             }
 
             val goToLibraryTab = { tabNavigator.current = LibraryTab }
+            val goToHomeTab = { tabNavigator.current = HomeTab }
 
-            BackHandler(enabled = tabNavigator.current != LibraryTab, onBack = goToLibraryTab)
+            BackHandler(enabled = tabNavigator.current != HomeTab, onBack = goToHomeTab)
 
             LaunchedEffect(Unit) {
                 launch {
@@ -181,22 +184,23 @@ object HomeScreen : Screen() {
             navigationSuiteType = navigationSuiteType,
             selected = selected,
             // Webtoon-style: no indicator pill, selected tab is simply tinted green
-            colors = NavigationSuiteDefaults.itemColors(
-                navigationBarItemColors = NavigationBarItemDefaults.colors(
+            colors = if (navigationSuiteType == NavigationSuiteType.NavigationRail) {
+                NavigationRailItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = Color.Transparent,
+                    selectedIndicatorColor = Color.Transparent,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-                navigationRailItemColors = NavigationRailItemDefaults.colors(
+                )
+            } else {
+                NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = Color.Transparent,
+                    selectedIndicatorColor = Color.Transparent,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-            ),
+                )
+            },
             onClick = {
                 if (!selected) {
                     tabNavigator.current = tab
