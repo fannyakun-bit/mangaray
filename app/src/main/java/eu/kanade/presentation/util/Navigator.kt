@@ -14,8 +14,7 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScreenTransitionContent
-import soup.compose.material.motion.animation.materialSharedAxisX
-import soup.compose.material.motion.animation.rememberSlideDistance
+import soup.compose.material.motion.animation.materialSharedAxisZ
 
 /**
  * For invoking back press to the parent activity
@@ -40,13 +39,11 @@ fun DefaultNavigatorScreenTransition(
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
-    val slideDistance = rememberSlideDistance()
     ScreenTransition(
         navigator = navigator,
         transition = {
-            materialSharedAxisX(
+            materialSharedAxisZ(
                 forward = navigator.lastEvent != StackEvent.Pop,
-                slideDistance = slideDistance,
             )
         },
         modifier = modifier,
