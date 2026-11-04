@@ -536,7 +536,8 @@ class MainActivity : BaseActivity() {
             try {
                 val firstInstallTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
                 val eligibleTime = Instant.fromEpochMilliseconds(firstInstallTime).plus(6 * 30.days)
-                showCampaign = (Clock.System.now() >= eligibleTime && !preferences.donationCampaignShown.get())
+                // MangaRay: kampanye donasi Mihon dimatikan (donasi Mihon bukan untuk fork ini)
+                showCampaign = false && (Clock.System.now() >= eligibleTime && !preferences.donationCampaignShown.get())
             } catch (_: PackageManager.NameNotFoundException) {
             }
         }

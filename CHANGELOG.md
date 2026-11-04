@@ -1,3 +1,5 @@
+> **Catatan fork:** MangaRay adalah fork dari [Mihon](https://github.com/mihonapp/mihon), berlisensi Apache 2.0. Dokumen ini berasal dari Mihon dan dipertahankan sebagai referensi/atribusi; sebut "Mihon" di dalamnya merujuk ke proyek asli.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

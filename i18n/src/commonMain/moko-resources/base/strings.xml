@@ -1098,5 +1098,7 @@
     <string name="home_continue_reading">Lanjut baca</string>
     <string name="home_new_updates">Baru update</string>
     <string name="home_favorites">Favorit</string>
+    <string name="home_see_all">Lihat semua</string>
+    <string name="home_read_now">Baca</string>
     <string name="daily_completed">Completed</string>
 </resources>

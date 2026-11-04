@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MangaRay logo glyph (huruf "M"), menggantikan glyph bawaan Mihon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="256dp"
+    android:height="196dp"
+    android:viewportWidth="172"
+    android:viewportHeight="132">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M0,132L0,0L30,0L86,76L142,0L172,0L172,132L142,132L142,42L86,118L30,42L30,132Z"/>
+</vector>
