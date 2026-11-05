@@ -1,48 +1,71 @@
 name: Unzip project
 
-# Upload zip (patch atau full) ke root repo, atau jalankan manual dari tab Actions.
-# Isi zip di-OVERLAY ke repo: file yang ada di zip menimpa yang lama,
-# file lain TIDAK dihapus (aman untuk zip patch berisi file yang berubah saja).
+# Cara pakai: upload file .zip (patch atau full) ke ROOT repo lewat GitHub web/app.
+# Workflow jalan otomatis, nimpa file di repo, hapus zip-nya, lalu commit.
+# - Overlay tanpa delete: file yang ga ada di zip TIDAK dihapus (aman untuk zip patch).
+# - Kalau upload banyak zip sekaligus, diproses urut nama (patch, patch2, patch3, ...).
+# - Folder .github/workflows di dalam zip diabaikan (token ga boleh ubah workflow).
 on:
-  workflow_dispatch:
   push:
     paths:
       - "*.zip"
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: unzip-project
+  cancel-in-progress: false
 
 jobs:
   unzip:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Cari zip
+        id: find
+        run: |
+          # zip yang baru ditambahkan di commit terakhir; kalau ga ada (manual run), ambil semua zip di root
+          NEW=$(git diff --diff-filter=A --name-only HEAD~1 HEAD -- '*.zip' 2>/dev/null | grep -v '/' | sort || true)
+          if [ -z "$NEW" ]; then
+            NEW=$(ls -1 *.zip 2>/dev/null | sort || true)
+          fi
+          if [ -z "$NEW" ]; then
+            echo "Tidak ada zip untuk diproses"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$NEW" > /tmp/zips.txt
+          echo "Akan diproses:"; cat /tmp/zips.txt
 
       - name: Extract zip
+        if: steps.find.outputs.found == 'true'
         run: |
-          ZIP=$(ls -t *.zip 2>/dev/null | head -n 1)
-          if [ -z "$ZIP" ]; then
-            echo "Tidak ada file .zip di root repo"
-            exit 1
-          fi
-          echo "Extract: $ZIP"
-          rm -rf /tmp/unz && mkdir /tmp/unz
-          unzip -q "$ZIP" -d /tmp/unz
+          while IFS= read -r ZIP; do
+            [ -f "$ZIP" ] || continue
+            echo "== $ZIP"
+            rm -rf /tmp/unz && mkdir /tmp/unz
+            unzip -q -o "$ZIP" -d /tmp/unz
 
-          # Kalau isinya cuma 1 folder (mangaray-main/), pakai isi folder itu
-          SRC=/tmp/unz
-          if [ "$(ls -A /tmp/unz | wc -l)" = "1" ] && [ -d "$(ls -d /tmp/unz/* | head -n 1)" ]; then
-            SRC=$(ls -d /tmp/unz/* | head -n 1)
-          fi
+            # Kalau isinya cuma 1 folder (mis. mangaray-main/), pakai isi folder itu
+            SRC=/tmp/unz
+            if [ "$(ls -A /tmp/unz | wc -l)" = "1" ] && [ -d "$(ls -d /tmp/unz/* | head -n 1)" ]; then
+              SRC=$(ls -d /tmp/unz/* | head -n 1)
+            fi
 
-          # Token tidak boleh ubah .github/workflows
-          rm -rf "$SRC/.github/workflows"
-
-          # Overlay tanpa --delete
-          rsync -a --exclude '.git' --exclude "$ZIP" "$SRC"/ ./
-          rm -f "$ZIP"
+            rm -rf "$SRC/.github/workflows"
+            rsync -a --exclude '.git' "$SRC"/ ./
+            git rm -q --cached -f "$ZIP" 2>/dev/null || true
+            rm -f "$ZIP"
+          done < /tmp/zips.txt
 
       - name: Commit & push
+        if: steps.find.outputs.found == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
