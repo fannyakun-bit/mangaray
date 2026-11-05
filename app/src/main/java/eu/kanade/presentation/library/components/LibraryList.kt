@@ -1,5 +1,6 @@
 package eu.kanade.presentation.library.components
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,6 +64,19 @@ internal fun LibraryList(
                 },
                 onLongClick = { onLongClick(libraryItem.libraryManga) },
                 onClick = { onClick(libraryItem.libraryManga) },
+                chaptersText = libraryItem.libraryManga.totalChapters.takeIf { it > 0 }?.let {
+                    "Chapter ${libraryItem.libraryManga.readCount} dari $it"
+                },
+                progressPercent = libraryItem.libraryManga.totalChapters.takeIf { it > 0 }?.let {
+                    (libraryItem.libraryManga.readCount * 100 / it).toInt()
+                },
+                lastReadText = libraryItem.libraryManga.lastRead?.let {
+                    DateUtils.getRelativeTimeSpanString(
+                        it.toEpochMilliseconds(),
+                        System.currentTimeMillis(),
+                        DateUtils.MINUTE_IN_MILLIS,
+                    ).toString()
+                },
                 onClickContinueReading = if (onClickContinueReading != null && libraryItem.unreadCount > 0) {
                     { onClickContinueReading(libraryItem.libraryManga) }
                 } else {

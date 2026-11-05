@@ -1,5 +1,6 @@
 package eu.kanade.presentation.library.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -341,11 +342,16 @@ fun MangaListItem(
     isSelected: Boolean = false,
     coverAlpha: Float = 1f,
     onClickContinueReading: (() -> Unit)? = null,
+    chaptersText: String? = null,
+    progressPercent: Int? = null,
+    lastReadText: String? = null,
 ) {
+    // Layout ala referensi (My Library): cover portrait + judul, chapter, persen terbaca, terakhir dibaca
+    val hasInfo = chaptersText != null || progressPercent != null || lastReadText != null
     Row(
         modifier = Modifier
             .selectedBackground(isSelected)
-            .height(80.dp)
+            .height(if (hasInfo) 104.dp else 80.dp)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
@@ -353,21 +359,60 @@ fun MangaListItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MangaCover.Square(
-            modifier = Modifier
-                .fillMaxHeight()
-                .alpha(coverAlpha),
-            data = coverData,
-        )
-        Text(
-            text = title,
+        if (hasInfo) {
+            MangaCover.Book(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .alpha(coverAlpha),
+                data = coverData,
+            )
+        } else {
+            MangaCover.Square(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .alpha(coverAlpha),
+                data = coverData,
+            )
+        }
+        Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .weight(1f),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-        )
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            )
+            if (chaptersText != null) {
+                Text(
+                    text = chaptersText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+            if (progressPercent != null) {
+                Text(
+                    text = "$progressPercent% dibaca",
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+            if (lastReadText != null) {
+                Text(
+                    text = lastReadText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         BadgeGroup(content = badge)
         if (onClickContinueReading != null) {
             ContinueReadingButton(
