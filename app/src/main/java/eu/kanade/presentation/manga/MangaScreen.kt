@@ -327,7 +327,7 @@ private fun MangaScreenSmallImpl(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            val isFABVisible = state.hasUnreadChapters && !isAnySelected
+            val isFABVisible = state.hasUnreadChapters && !isAnySelected && chapterListState.firstVisibleItemIndex > 0
             SmallExtendedFloatingActionButton(
                 text = {
                     Text(
@@ -388,6 +388,14 @@ private fun MangaScreenSmallImpl(
                             isStubSource = remember { state.source is StubSource },
                             onCoverClick = onCoverClicked,
                             doSearch = onSearch,
+                            continueText = if (state.hasUnreadChapters) {
+                                stringResource(
+                                    if (state.hasReadChapters) MR.strings.action_resume else MR.strings.action_start,
+                                )
+                            } else {
+                                null
+                            },
+                            onContinueClick = onContinueReading,
                         )
                     }
 

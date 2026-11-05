@@ -1,6 +1,20 @@
 package eu.kanade.presentation.browse
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -49,14 +63,77 @@ fun GlobalSearchScreen(
             )
         },
     ) { paddingValues ->
-        GlobalSearchContent(
-            items = state.filteredItems,
-            contentPadding = paddingValues,
-            getManga = getManga,
-            onClickSource = onClickSource,
-            onClickItem = onClickItem,
-            onLongClickItem = onLongClickItem,
-        )
+        if (state.searchQuery.isNullOrBlank() && state.filteredItems.isEmpty()) {
+            // Layout ala referensi: pencarian populer + filter cepat saat belum ada query
+            SearchSuggestions(
+                contentPadding = paddingValues,
+                onPick = {
+                    onChangeSearchQuery(it)
+                    onSearch(it)
+                },
+            )
+        } else {
+            GlobalSearchContent(
+                items = state.filteredItems,
+                contentPadding = paddingValues,
+                getManga = getManga,
+                onClickSource = onClickSource,
+                onClickItem = onClickItem,
+                onLongClickItem = onLongClickItem,
+            )
+        }
+    }
+}
+
+private val POPULAR_SEARCHES = listOf("Manhwa", "Manhua", "Isekai", "Romance", "Action", "Top rated", "Drama")
+private val QUICK_STATUS = listOf("Ongoing", "Completed")
+private val QUICK_GENRES = listOf(
+    "Sci-Fi", "Horror", "Sport", "Romance", "Comedy", "Adventure", "Fantasy", "Thriller", "Mystery",
+)
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SearchSuggestions(
+    contentPadding: PaddingValues,
+    onPick: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(contentPadding)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        SuggestionGroup(title = "Pencarian populer", items = POPULAR_SEARCHES, onPick = onPick)
+        SuggestionGroup(title = "Status", items = QUICK_STATUS, onPick = onPick)
+        SuggestionGroup(title = "Genre", items = QUICK_GENRES, onPick = onPick)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SuggestionGroup(
+    title: String,
+    items: List<String>,
+    onPick: (String) -> Unit,
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+    )
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items.forEach { item ->
+            SuggestionChip(
+                onClick = { onPick(item) },
+                label = { Text(text = item) },
+                shape = RoundedCornerShape(50),
+            )
+        }
     }
 }
 

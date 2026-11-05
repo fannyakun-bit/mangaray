@@ -1,5 +1,12 @@
 package eu.kanade.presentation.reader.appbars
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,9 +33,30 @@ fun ReaderTopBar(
     AppBar(
         modifier = modifier,
         backgroundColor = Color.Transparent,
-        // Webtoon-style: episode title on top, series title as subtitle
-        title = chapterTitle ?: mangaTitle,
-        subtitle = if (chapterTitle != null) mangaTitle else null,
+        // Layout ala referensi: judul chapter (aksen) di atas, judul series di bawah, rata tengah
+        titleContent = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                if (chapterTitle != null) {
+                    Text(
+                        text = chapterTitle,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                Text(
+                    text = mangaTitle ?: chapterTitle.orEmpty(),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        },
         navigateUp = navigateUp,
         actions = {
             AppBarActions(

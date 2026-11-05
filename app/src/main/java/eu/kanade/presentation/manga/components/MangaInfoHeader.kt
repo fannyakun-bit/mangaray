@@ -1,5 +1,6 @@
 package eu.kanade.presentation.manga.components
 
+import androidx.compose.material3.Button
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -124,6 +125,8 @@ fun MangaInfoBox(
     onCoverClick: () -> Unit,
     doSearch: (query: String, global: Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    continueText: String? = null,
+    onContinueClick: (() -> Unit)? = null,
 ) {
     Box(modifier = modifier) {
         // Backdrop
@@ -160,7 +163,9 @@ fun MangaInfoBox(
                 isStubSource = isStubSource,
                 onCoverClick = onCoverClick,
                 doSearch = doSearch,
-                coverWidthFraction = if (isTabletUi) 0.65f else 0.42f,
+                coverWidthFraction = if (isTabletUi) 0.4f else 0.38f,
+                continueText = continueText,
+                onContinueClick = onContinueClick,
             )
         }
     }
@@ -388,16 +393,20 @@ private fun MangaAndSourceTitlesLarge(
     isStubSource: Boolean,
     onCoverClick: () -> Unit,
     doSearch: (query: String, global: Boolean) -> Unit,
-    coverWidthFraction: Float = 0.65f,
+    coverWidthFraction: Float = 0.4f,
+    continueText: String? = null,
+    onContinueClick: (() -> Unit)? = null,
 ) {
-    Column(
+    // Layout ala referensi: cover di kiri, judul/penulis/status/tombol lanjut di kanan
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, top = appBarPadding + 16.dp, end = 16.dp, bottom = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.Bottom,
     ) {
         MangaCover.Book(
-            modifier = Modifier.fillMaxWidth(coverWidthFraction),
+            modifier = Modifier.weight(coverWidthFraction),
             shape = MaterialTheme.shapes.small,
             data = ImageRequest.Builder(LocalContext.current)
                 .data(manga)
@@ -406,17 +415,31 @@ private fun MangaAndSourceTitlesLarge(
             contentDescription = stringResource(MR.strings.manga_cover),
             onClick = onCoverClick,
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        MangaContentInfo(
-            title = manga.title,
-            author = manga.author,
-            artist = manga.artist,
-            status = manga.status,
-            source = source,
-            isStubSource = isStubSource,
-            doSearch = doSearch,
-            textAlign = TextAlign.Center,
-        )
+        Column(
+            modifier = Modifier.weight(1f - coverWidthFraction),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            MangaContentInfo(
+                title = manga.title,
+                author = manga.author,
+                artist = manga.artist,
+                status = manga.status,
+                source = source,
+                isStubSource = isStubSource,
+                doSearch = doSearch,
+                textAlign = TextAlign.Start,
+            )
+            if (continueText != null && onContinueClick != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = onContinueClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Text(text = continueText, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }
 
@@ -435,6 +458,7 @@ private fun ColumnScope.MangaContentInfo(
     Text(
         text = title.ifBlank { stringResource(MR.strings.unknown_title) },
         style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold,
         modifier = Modifier.clickableNoIndication(
             onLongClick = {
                 if (title.isNotBlank()) {
