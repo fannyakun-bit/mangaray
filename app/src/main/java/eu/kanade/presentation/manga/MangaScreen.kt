@@ -29,6 +29,8 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
@@ -362,6 +364,8 @@ private fun MangaScreenSmallImpl(
             indicatorPadding = PaddingValues(top = topPadding),
         ) {
             val layoutDirection = LocalLayoutDirection.current
+            // Tab ala referensi: Chapters / Detail
+            var selectedTab by remember { mutableIntStateOf(0) }
             VerticalFastScroller(
                 listState = chapterListState,
                 topContentPadding = topPadding,
@@ -417,12 +421,27 @@ private fun MangaScreenSmallImpl(
                         )
                     }
 
-                    item(
+                    item(key = "MANGA_TABS", contentType = "MANGA_TABS") {
+                        PrimaryTabRow(selectedTabIndex = selectedTab) {
+                            Tab(
+                                selected = selectedTab == 0,
+                                onClick = { selectedTab = 0 },
+                                text = { Text(text = "${stringResource(MR.strings.chapters)} (${chapters.size})") },
+                            )
+                            Tab(
+                                selected = selectedTab == 1,
+                                onClick = { selectedTab = 1 },
+                                text = { Text(text = stringResource(MR.strings.manga_tab_details)) },
+                            )
+                        }
+                    }
+
+                    if (selectedTab == 1) item(
                         key = MangaScreenItem.DESCRIPTION_WITH_TAG,
                         contentType = MangaScreenItem.DESCRIPTION_WITH_TAG,
                     ) {
                         ExpandableMangaDescription(
-                            defaultExpandState = state.isFromSource,
+                            defaultExpandState = true,
                             description = state.manga.description,
                             tagsProvider = { state.manga.genre },
                             notes = state.manga.notes,
@@ -432,7 +451,7 @@ private fun MangaScreenSmallImpl(
                         )
                     }
 
-                    item(
+                    if (selectedTab == 0) item(
                         key = MangaScreenItem.CHAPTER_HEADER,
                         contentType = MangaScreenItem.CHAPTER_HEADER,
                     ) {
@@ -444,7 +463,7 @@ private fun MangaScreenSmallImpl(
                         )
                     }
 
-                    sharedChapterItems(
+                    if (selectedTab == 0) sharedChapterItems(
                         manga = state.manga,
                         chapters = listItem,
                         isAnyChapterSelected = state.selectedChapters.isNotEmpty(),
